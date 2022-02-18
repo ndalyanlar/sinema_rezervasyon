@@ -133,8 +133,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   .copyWith(fontWeight: FontWeight.bold),
             ),
             IconButton(
-                onPressed: () {},
-                icon: Image.asset("assets/icons/menu_top.png"))
+              onPressed: () {},
+              icon: Image.asset("assets/icons/menu_top.png"),
+            )
           ],
         ),
       ),
