@@ -200,62 +200,6 @@ class _ChooseSeatsState extends State<ChooseSeats> {
                                       content: const Text(
                                           "Lütfen Koltuk Seçimi Yapın...")))
                               : _buildShowModalBottomSheet(context);
-
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (_) => AlertDialog(
-                          //       contentPadding:
-                          //           EdgeInsets.only(bottom: 0, left: 5),
-                          //       shape: RoundedRectangleBorder(
-                          //           borderRadius: BorderRadius.all(
-                          //               Radius.circular(32.0))),
-                          //       actions: [
-                          //         TextButton(
-                          //           // textColor: Colors.pink,
-                          //           onPressed: () => Navigator.pop(context),
-                          //           child: Text('CLOSE'),
-                          //         )
-                          //       ],
-                          //       insetPadding: EdgeInsets.symmetric(
-                          //           horizontal: 40, vertical: 40),
-                          //       title: Text("Rezervasyon Detayları",
-                          //           textAlign: TextAlign.center,
-                          //           style: GoogleFonts.poppins(
-                          //               fontSize: 18,
-                          //               fontWeight: FontWeight.w600,
-                          //               color: Colors.pink)),
-                          //       content: Container(
-                          //         width: 100,
-                          //         height: 100,
-                          //         child: ListView(
-                          //           children: [
-                          //             Text("Film: ",
-                          //                 style: GoogleFonts.poppins(
-                          //                     fontSize: 17,
-                          //                     fontWeight: FontWeight.w600,
-                          //                     color: Colors.black)),
-                          //             Text("Süre:  ",
-                          //                 style: GoogleFonts.poppins(
-                          //                     fontSize: 17,
-                          //                     fontWeight: FontWeight.w600,
-                          //                     color: Colors.black)),
-                          //             // Text(
-                          //             //     "Tarih:  " +
-                          //             //         DateFormat.yMd()
-                          //             //             .format(widget.chosen),
-                          //             //     style: GoogleFonts.poppins(
-                          //             //         fontSize: 17,
-                          //             //         fontWeight: FontWeight.w600,
-                          //             //         color: Colors.black)),
-                          //             Text("Koltuklar:  " + selectedSeatsText,
-                          //                 style: GoogleFonts.poppins(
-                          //                     fontSize: 17,
-                          //                     fontWeight: FontWeight.w600,
-                          //                     color: Colors.black)),
-                          //           ],
-                          //         ),
-                          //       )),
-                          // );
                         },
                       ),
                     ),
@@ -274,6 +218,7 @@ class _ChooseSeatsState extends State<ChooseSeats> {
       }
       return 'Geçerli bir eposta adresi giriniz';
     }
+
     return null;
   }
 
@@ -295,6 +240,7 @@ class _ChooseSeatsState extends State<ChooseSeats> {
 
   TextEditingController dateinput = TextEditingController();
   String? validateDate(String? value) {
+    bool _ageConfirm = false;
     if (value!.isEmpty) {
       return "Lütfen Tarih giriniz";
     }
@@ -352,9 +298,18 @@ class _ChooseSeatsState extends State<ChooseSeats> {
                   ),
                 )),
           );
+        } else {
+          setState(() {
+            _ageConfirm = true;
+          });
         }
       }
     });
+
+    if (!_ageConfirm) {
+      return "Yaşınız uygun değildir";
+    }
+    return null;
 
     // if (value!.isEmpty && ) {
     //   return
@@ -370,131 +325,148 @@ class _ChooseSeatsState extends State<ChooseSeats> {
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            color: bgColor,
-            child: Center(
-              child: Form(
-                key: _formKey,
-                // autovalidateMode: AutovalidateMode.always,
-                child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const Spacer(
-                        flex: 5,
-                      ),
-                      Text(
-                        "Kayıt Formu",
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      TextFormField(
-                        validator: (value) {
-                          return validateNameAndSurname(value, "adınızı");
-                        },
-                        decoration: _buildInputDecoration(
-                            label: "Ad", hint: "Adınızı Giriniz"),
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      TextFormField(
-                        validator: (value) {
-                          return validateNameAndSurname(value, "soyadınızı");
-                        },
-                        decoration: _buildInputDecoration(
-                            label: "Soyad", hint: "Soyadınızı Giriniz"),
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        validator: validateEmail,
-                        decoration: _buildInputDecoration(
-                            label: "Eposta", hint: "Epostanızı giriniz"),
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      TextFormField(
-                        validator: validateMobile,
-                        keyboardType: TextInputType.phone,
-                        decoration: _buildInputDecoration(
-                            label: "Telefon",
-                            hint: "Telefon numarınızı giriniz"),
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      TextFormField(
-                        validator: validateDate,
-                        keyboardType: TextInputType.datetime,
-                        controller:
-                            dateinput, //editing controller of this TextField
-                        decoration: const InputDecoration(
-                            icon:
-                                Icon(Icons.calendar_today), //icon of text field
-                            labelText:
-                                "Doğum Tarihinizi Girin" //label text of field
-                            ),
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              firstDate: DateTime(1930),
-                              lastDate: DateTime.now(),
-                              initialDate: DateTime.now());
+          return Scaffold(
+            body: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                color: bgColor,
+                child: Center(
+                  child: Form(
+                    key: _formKey,
+                    // autovalidateMode: AutovalidateMode.always,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Spacer(
+                            flex: 5,
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.arrow_back_ios)),
+                              Text(
+                                "Kayıt Formu",
+                                style: Theme.of(context).textTheme.headline4,
+                              ),
+                            ],
+                          ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          TextFormField(
+                            validator: (value) {
+                              return validateNameAndSurname(value, "adınızı");
+                            },
+                            decoration: _buildInputDecoration(
+                                label: "Ad", hint: "Adınızı Giriniz"),
+                          ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          TextFormField(
+                            validator: (value) {
+                              return validateNameAndSurname(
+                                  value, "soyadınızı");
+                            },
+                            decoration: _buildInputDecoration(
+                                label: "Soyad", hint: "Soyadınızı Giriniz"),
+                          ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            validator: validateEmail,
+                            decoration: _buildInputDecoration(
+                                label: "Eposta", hint: "Epostanızı giriniz"),
+                          ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          TextFormField(
+                            validator: validateMobile,
+                            keyboardType: TextInputType.phone,
+                            decoration: _buildInputDecoration(
+                                label: "Telefon",
+                                hint: "Telefon numarınızı giriniz"),
+                          ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          TextFormField(
+                            validator: validateDate,
+                            keyboardType: TextInputType.datetime,
+                            controller:
+                                dateinput, //editing controller of this TextField
+                            decoration: const InputDecoration(
+                                icon: Icon(
+                                    Icons.calendar_today), //icon of text field
+                                labelText:
+                                    "Doğum Tarihinizi Girin" //label text of field
+                                ),
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  firstDate: DateTime(1930),
+                                  lastDate: DateTime.now(),
+                                  initialDate: DateTime.now());
 
-                          if (pickedDate != null) {
-                            String formattedDate =
-                                DateFormat('dd.MM.yyyy').format(pickedDate);
+                              if (pickedDate != null) {
+                                String formattedDate =
+                                    DateFormat('dd.MM.yyyy').format(pickedDate);
 
-                            setState(() {
-                              dateinput.text = formattedDate;
-                            });
-                          }
-                        },
-                      ),
-                      const Spacer(
-                        flex: 1,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            child: const Text('Onayla'),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _selectedItems.toList().forEach((element) {
-                                  movieProvider.movieList
-                                      .toList()
-                                      .forEach((value) {
-                                    value.name == widget.movie.name
-                                        ? value.updateSeats(
-                                            SeatsList.instance.seats[element])
-                                        : null;
-                                  });
+                                setState(() {
+                                  dateinput.text = formattedDate;
                                 });
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HomePage()),
-                                  (Route<dynamic> route) => false,
-                                );
                               }
+                              _formKey.currentState!.validate();
                             },
                           ),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: const Text('Onayla'),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _selectedItems.toList().forEach((element) {
+                                      movieProvider.movieList
+                                          .toList()
+                                          .forEach((value) {
+                                        value.name == widget.movie.name
+                                            ? value.updateSeats(SeatsList
+                                                .instance.seats[element])
+                                            : null;
+                                      });
+                                    });
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const HomePage()),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                          if (MediaQuery.of(context).viewInsets.bottom == 0)
+                            const Spacer(
+                              flex: 5,
+                            ),
                         ],
                       ),
-                      const Spacer(
-                        flex: 5,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
